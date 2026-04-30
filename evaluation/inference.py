@@ -19,6 +19,7 @@ import json
 import copy
 from tqdm import tqdm
 import pandas as pd
+from datasets import load_dataset
 judge_prompt = '''You are a helpful assistant designed to output in the format of given examples.\
 You should help me to evaluate the response given the question and the correct answer.\
  You need to convert the distance of the correct answer and response to meters.\
@@ -92,10 +93,15 @@ def eval_llava(args):
 
     count = 0
 
-    for i in tqdm(range(len(data[:]))):
+    print(data)
+    print(len(data[:]))
+    print(len(data))
+
+    print(data[0])
+    for i in tqdm(range(len(data))):
         sample = data[i]
         count+=1
-        prompt = sample['conversations'][0]['value']
+        prompt = sample['conversations']['value']
         image = sample['image']
 
         input_ids = tokenizer_image_token(prompt, tokenizer, IMAGE_TOKEN_INDEX, return_tensors='pt').unsqueeze(0).cuda()
@@ -129,7 +135,7 @@ def eval_llava(args):
         response= tokenizer.batch_decode(output_ids, skip_special_tokens=True)[0].strip()
 
        
-        gt = sample['conversations'][1]['value']
+        gt = sample['conversations']['value']
         print(f'pred:{response}')
 
         ans_file.write(

@@ -137,7 +137,9 @@ Answer: {answer}
 Response: {pred}
 
 """
-    return prompt.replace('{question}',question).replace('{answer}',answer).replace('{pred}',pred)
+    #print(type(answer))
+    #print(answer)
+    return prompt.replace('{question}',question[0]).replace('{answer}',answer[1]).replace('{pred}',pred)
 
 
 
@@ -231,6 +233,9 @@ def main(args):
                 print(count)
                 print(line)
 
+            llama_evaluation = evaluate_quan_dist_question(
+                question=data["question"], answer=data["gt"],pred=data["pred"]
+            )
             middle.append({'input':llama_evaluation,'answer':None,'type':data['type']})
 
         for line in tqdm(middle[1:]):
